@@ -2,6 +2,11 @@ import express from 'express';
 import userController from './controllers/userController.js';
 import streamController from './controllers/streamController.js';
 
+const connectDB = require('./config/db');
+const dotenv = require('dotenv');
+dotenv.config();
+connectDB();
+
 const PORT = 8000;
 const app = express();
 
