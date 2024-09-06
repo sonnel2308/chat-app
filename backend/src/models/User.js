@@ -6,7 +6,7 @@ const userSchema = new mongoose.Schema({
   password: String,
   profilePicture: String,
   biography: String,
-  isOnline: Boolean,
+  visibility: Boolean,
   friendIDs: [String],
   blockedUserIDs: [String],
   streamIDs: [String],

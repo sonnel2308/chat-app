@@ -1,5 +1,5 @@
 import express from 'express';
-import { createUser, getUser, updateUsername } from '../services/userService.js';
+import { createUser, getUser, updateUserInfo, blockUser, unblockUser } from '../services/userService.js';
 
 const controller = express.Router()
 
@@ -19,12 +19,32 @@ controller.get('/getUser', async (req, res) => {
   return user ? res.status(200).json(user) : res.status(404).json({"error": "cannot get user"});
 });
 
-controller.put('/updateUsername', async (req, res) => {
-  console.log("Received request on /updateUsername");
-  const { userId, username } = req.body;
-  const result = await updateUsername(userId, username);
-  console.log("Respoding to request on /updateUsername: ", result);
-  return result ? res.status(200).send("OK") : res.status(500).json({"error": "cannot update username"});
+const handleFieldUpdate = (field) => async (req, res) => {
+  const {userId, newValue} = req.body;
+  const updatedUser = await updateUserInfo(userId, field, newValue);
+  
+  return updatedUser ? res.status(200).send("OK") : res.status(500).json({"error": "could not update user info"});
+}
+
+controller.put('/update/username', handleFieldUpdate('username'));
+controller.put('/update/password', handleFieldUpdate('password'));
+controller.put('/update/email', handleFieldUpdate('email'));
+controller.put('/update/biography', handleFieldUpdate('biography'));
+controller.put('/update/profilePicture', handleFieldUpdate('profilePicture'));
+controller.put('/update/visibility', handleFieldUpdate('visibility'));
+
+controller.put('/block', async (req, res) => {
+  const { userId, blockedUserId } = req.body;
+  const block = await blockUser(userId, blockedUserId);
+  
+  return block ? res.status(200).send("OK") : res.status(500).json({"error": "could not block user"});
+});
+
+controller.put('/unblock', async (req, res) => {
+  const { userId, blockedUserId } = req.body;
+  const block = await unblockUser(userId, blockedUserId);
+  
+  return block ? res.status(200).send("OK") : res.status(500).json({"error": "could not unblock user"});
 });
 
 export default controller;
