@@ -7,7 +7,7 @@ import streamController from './controllers/streamController.js';
 const app = express();
 
 dotenv.config();
-const PORT = 8000;
+const PORT = 8001;
 const MONGO_URI = process.env.MONGO_URI;
 
 app.use(express.json());
